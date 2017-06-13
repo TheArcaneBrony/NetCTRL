@@ -4,17 +4,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
-import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Enumeration;
 
 public class Main extends JPanel {
 	
-	Timer t = new Timer(1, new Listener());
+	Timer t = new Timer(499, new Listener());
+	Timer t_ping = new Timer(2, new Listener_ping());
 	static String ip = "";
 	
 	boolean setlock = false;
@@ -41,8 +39,8 @@ public class Main extends JPanel {
 			    	long Start = System.nanoTime();
 			    	
 			    	InetAddress i = (InetAddress) ee.nextElement();
-			        //System.out.println(i.getHostAddress());
 			    	String tmp = i.getHostAddress();
+			    	String tmp2 = "";
 			    	if(!tmp.contains("127.0.0.1") && !tmp.contains(":")) {
 			    	 
 				    	c++;
@@ -51,18 +49,15 @@ public class Main extends JPanel {
 				        
 				        if(c == 1) {
 				        	ip = tmp;
+				        	tmp2 = n.getDisplayName();
 				        	
 				        }
 			    	} 
 			        long End = System.nanoTime();
-			        System.out.println(End-Start + " ns   " + tmp + "   " + n.getDisplayName());
+			        System.out.println(End-Start + " ns   " + tmp + "   " + tmp2 /*n.getDisplayName()*/);
 			    }}
 			}
-			/*String[] tmp2 = ip.split(".");
-			System.out.println(Arrays.asList(ip.toString().split("")).toString());
-			System.out.println(ip);*/
-			
-			//ip = NetworkInterface.getNetworkInterfaces().nextElement().getDisplayName();
+
 		} catch (SocketException e) {
 			e.printStackTrace();
 		} catch (NullPointerException e) {
@@ -72,38 +67,31 @@ public class Main extends JPanel {
 			
 			e1.printStackTrace();
 		}
-		//g.drawString("Local IP: " + ip, 100, 15);
 	JFrame frame = new JFrame();
 	frame.setSize(512, 512);
 	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	frame.setVisible(true);
 	Main panel = new Main();
 	frame.add(panel);
+	
+	
 	}
 	public Main(){
 		super();
 		t.start();
+		t_ping.start();
 		addKeyListener(new Key());
 		setFocusable(true);
-		
-		
-		
-	/*	for(int k = 0; k < balls.length; k++){
-			
-			//for(double i = 0; i < 2 * Math.PI; i+= 2 * Math.PI/ sides){
-				
-				//lines[plen + ct][0] = px + (int) (radius * Math.cos(i));
-				//lines[plen + ct][1] = py + (int) (radius * Math.sin(i));
-				//lines[plen + ct][2] = px + (int) (radius * Math.cos(i - 2 *Math.PI / sides));
-				//lines[plen + ct][3] = py + (int) (radius * Math.sin(i - 2 * Math.PI / sides));
-			//}
-		}*/
-		
 	}
 	
 	private class Listener implements ActionListener {
 		public void actionPerformed(ActionEvent e){
 			repaint();				
+			}
+		}
+	private class Listener_ping implements ActionListener {
+		public void actionPerformed(ActionEvent e){
+			netping(getGraphics(), "127.0.0.");
 			}
 		}
 	
@@ -112,25 +100,39 @@ public class Main extends JPanel {
 		super.paintComponent(g);
 		System.out.println("Draw called");
 		g.drawString("test", 2, 2);
-		//String subnet = tmp2[0] + "." + tmp2[1] + "." + tmp2[2] + ".";
-		String subnet = "127.0.0.";
-		for (int i = 0; i < 255; i++) { 
-			
-			ip = subnet+i; 
-			
-			int ping=20;
-			try {
-				ping = InetAddress.getByName(ip).isReachable(100)?20:10;
-			} catch (IOException f) {
-				// TODO Auto-generated catch block
-				f.printStackTrace();
-			}
-			g.drawLine(i+1, ping, i+2, ping);
-			System.out.println(i);
-		}
-		
+		g.drawLine(100, 50, 100, 55);
+		g.drawLine(150, 50, 150, 55);
 		
 	}
+	
+	public void netping(Graphics g, String subnet) {
+		//String subnet = tmp2[0] + "." + tmp2[1] + "." + tmp2[2] + ".";
+				//String subnet = "127.0.0.";
+				for (int i = 0; i < 256; i++) { 
+					
+					ip = subnet+i; 
+					
+					int ping=20;
+					try {
+						ping = InetAddress.getByName(ip).isReachable(100)?20:10;
+					} catch (IOException f) {
+						// TODO Auto-generated catch block
+						f.printStackTrace();
+					}
+					g.setColor(Color.red);
+					if(ping==10) {
+						g.setColor(Color.GREEN);
+					}
+					 
+					g.drawLine(10+i, 20, 10+i, 20);
+					g.setColor(getBackground());
+					g.fillRect(100, 85, 85, 15);
+					g.setColor(Color.black);
+					g.drawString(ip, 100, 100);
+					g.drawLine((int)Math.round(100+(i/2.55)), 53, (int)Math.round(100+(i/2.55)), 53);
+				}
+	}
+	
 	
 	private class Key extends KeyAdapter {
 		public void keyPressed(KeyEvent e){
