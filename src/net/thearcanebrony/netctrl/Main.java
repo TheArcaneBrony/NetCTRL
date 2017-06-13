@@ -11,7 +11,7 @@ import java.util.Enumeration;
 
 public class Main extends JPanel {
 	
-	Timer t = new Timer(499, new Listener());
+	Timer t = new Timer(5000, new Listener());
 	Timer t_ping = new Timer(2, new Listener_ping());
 	static String ip = "";
 	
@@ -44,13 +44,9 @@ public class Main extends JPanel {
 			    	if(!tmp.contains("127.0.0.1") && !tmp.contains(":")) {
 			    	 
 				    	c++;
-				    	
-				        //g.drawString(tmp, 0, 16*c);
-				        
 				        if(c == 1) {
 				        	ip = tmp;
 				        	tmp2 = n.getDisplayName();
-				        	
 				        }
 			    	} 
 			        long End = System.nanoTime();
@@ -99,7 +95,6 @@ public class Main extends JPanel {
 	public void paintComponent(Graphics g){
 		super.paintComponent(g);
 		System.out.println("Draw called");
-		g.drawString("test", 2, 2);
 		g.drawLine(100, 50, 100, 55);
 		g.drawLine(150, 50, 150, 55);
 		
@@ -112,23 +107,23 @@ public class Main extends JPanel {
 					
 					ip = subnet+i; 
 					
-					int ping=20;
+					Boolean ping=false;
 					try {
-						ping = InetAddress.getByName(ip).isReachable(100)?20:10;
+						ping = InetAddress.getByName(ip).isReachable(0);
 					} catch (IOException f) {
 						// TODO Auto-generated catch block
 						f.printStackTrace();
 					}
-					g.setColor(Color.red);
-					if(ping==10) {
-						g.setColor(Color.GREEN);
-					}
-					 
-					g.drawLine(10+i, 20, 10+i, 20);
+					g.setColor(ping?Color.green:Color.red);
+					int x = (int) Math.sin((i*360)/255);
+					int fuck = (int) Math.tan((i*360)/255);
+					int y = (int) Math.cos((i*360)/255);
+					//g.drawLine((i%3)*251, 0, 256-(i%350)+100, 475);
+					g.drawLine(256, 256, 256+(25*x), 256+(25*y));
 					g.setColor(getBackground());
-					g.fillRect(100, 85, 85, 15);
+					g.fillRect(100, 85, 100, 15);
 					g.setColor(Color.black);
-					g.drawString(ip, 100, 100);
+					g.drawString(ip+"  "+ping, 100, 100);
 					g.drawLine((int)Math.round(100+(i/2.55)), 53, (int)Math.round(100+(i/2.55)), 53);
 				}
 	}
