@@ -11,10 +11,11 @@ import java.util.Enumeration;
 
 public class Main extends JPanel {
 	
-	Timer t = new Timer(5000, new Listener());
-	Timer t_ping = new Timer(2, new Listener_ping());
-	double sinv = 1.411764705882353;
+	Timer t = new Timer(60001, new Listener());
+	Timer t_ping = new Timer(0, new Listener_ping());
+	int div = 57;
 	static String ip = "";
+	int i=0;
 	
 	boolean setlock = false;
 	boolean rdown, ldown;
@@ -88,7 +89,12 @@ public class Main extends JPanel {
 		}
 	private class Listener_ping implements ActionListener {
 		public void actionPerformed(ActionEvent e){
-			netping(getGraphics(), "127.0.0.");
+			//for (int i = 0; i < 256; i++) { 
+
+			netping(getGraphics(), "127.0.0.", i);//178.116.55
+			i++;
+			if(i==256)
+				i=0;
 			}
 		}
 	
@@ -101,44 +107,53 @@ public class Main extends JPanel {
 		
 	}
 	
-	public void netping(Graphics g, String subnet) {
+	public void netping(Graphics g, String subnet, int i) {
 		//String subnet = tmp2[0] + "." + tmp2[1] + "." + tmp2[2] + ".";
 				//String subnet = "127.0.0.";
-				for (int i = 0; i < 256; i++) { 
-					
+		g.setColor(Color.blue);
+		double sinv = 1.411764705882353/div;
+
+									g.drawString(div+"", 0, 60);
 					ip = subnet+i; 
 					
 					Boolean ping=false;
 					try {
-						ping = InetAddress.getByName(ip).isReachable(0);
+						ping = InetAddress.getByName(ip).isReachable(500);
 					} catch (IOException f) {
 						// TODO Auto-generated catch block
 						f.printStackTrace();
 					}
 					g.setColor(ping?Color.green:Color.red);
 					double x = Math.sin(i*sinv)*128;
-					double y = Math.cos(i*sinv)*128;
+					double y = -Math.cos(i*sinv)*128;
 					//g.drawLine((i%3)*251, 0, 256-(i%350)+100, 475);
 					g.drawLine(256, 256, 256+(int)x, 256+(int)y);
+					g.drawLine(256, 256, 256+(int)x+2, 256+(int)y+2);
 					g.setColor(getBackground());
 					g.fillRect(100, 85, 100, 15);
 					g.setColor(Color.black);
 					g.drawString(ip+"  "+ping, 100, 100);
 					g.drawLine((int)Math.round(100+(i/2.55)), 53, (int)Math.round(100+(i/2.55)), 53);
-				}
+				
 	}
 	
 	
 	private class Key extends KeyAdapter {
 		public void keyPressed(KeyEvent e){
 			if(e.getKeyCode() == KeyEvent.VK_LEFT){
-				ldown = true;
+				div--;
 			}
+			if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+				div++;
+			}
+			
 		}
 		public void keyReleased(KeyEvent e){
-			setlock = false;
+			getGraphics().setColor(getBackground());;
+			getGraphics().fillRect(0, 0, 512, 512);
+			getGraphics().setColor(Color.black);
 			if(e.getKeyCode() == KeyEvent.VK_LEFT){
-				ldown = false;
+				div--;
 			}
 		}
 	}
