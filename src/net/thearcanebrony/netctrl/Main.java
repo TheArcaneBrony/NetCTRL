@@ -20,7 +20,8 @@ public class Main extends JPanel {
 	Timer t_ping = new Timer(1, new Listener_ping());
 	static String ip = "";
 	int i=0;
-	double sinv = 1.411764705882353/57;
+
+	Color c = new Color(10, 75, 15, 10);
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("NetCTRL 1.0.0a");
@@ -37,7 +38,7 @@ public class Main extends JPanel {
 				String nn = n.getDisplayName();
 				if(!n.isLoopback() && !nn.contains("Virtual") && !nn.contains("ISATAP") && !nn.contains("Interface")) {
 					Enumeration<InetAddress> ee = n.getInetAddresses();
-					while (ee.hasMoreElements() && c == 0) {
+					while (ee.hasMoreElements() && c == 0) {	
 						InetAddress i = (InetAddress) ee.nextElement();
 						String tmp = i.getHostAddress();
 						if(!tmp.contains("127.0.0.1") && !tmp.contains(":") && c == 0) {
@@ -77,7 +78,7 @@ public class Main extends JPanel {
 			Graphics g = getGraphics();
 			netping(g, "127.0.0."+ i);//178.116.55
 			i++;
-			g.setColor(Color.YELLOW);
+			
 			//getGraphics().draw3DRect(0+i, 0+i, 256-i, 256+i, true);		
 			if(i==256) {
 				i=0;
@@ -105,22 +106,16 @@ public class Main extends JPanel {
 		g.setColor(getBackground());
 		g.fillRect(60, 0, 300, 20);
 		g.fillRect(100, 85, 100, 15);
+		
+
 		g.setColor(Color.black);
 		g.drawString(ip + "   " + (End-Start)+ " ms   ", 60, 20);
 		g.setColor(ping?Color.green:Color.red);
-		int x = (int) (60+Math.sin(i*sinv)*32);
-		int y = (int) (60-Math.cos(i*sinv)*32);
-		//g.drawLine((i%3)*251, 0, 256-(i%350)+100, 475);
-		g.drawLine(60, 60, x, y);
-		for (int k = 60; k > 0; k--) {
-			int x2 = (int) (60+Math.sin((i-k)*sinv)*32);
-			int y2 = (int) (60-Math.cos((i-k)*sinv)*32);
-			Color c = new Color(200, 255, 200, 25).brighter();
-			g.setColor(c);
-			g.drawLine(60, 60, x2, y2);
-		}
 		g.drawString(ip+"  ", 100, 100);
 		g.drawLine((int)Math.round(100+(i/2.55)), 53, (int)Math.round(100+(i/2.55)), 53);
+		g.fillArc(27, 27, 66, 66, (int) -(i* 1.411764705882353), -10);
+		g.setColor(c);
+		g.fillArc(27, 27, 66, 66, 0, 360);
 	}
 	
 	private class Key extends KeyAdapter {
