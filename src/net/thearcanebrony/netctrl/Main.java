@@ -76,7 +76,7 @@ public class Main extends JPanel {
 	private class Listener_ping implements ActionListener {
 		public void actionPerformed(ActionEvent e){
 			Graphics g = getGraphics();
-			netping(g, "127.0.0."+ i);//178.116.55
+			netping(g, "178.116.55."+ i);//178.116.55
 			i++;
 			
 			//getGraphics().draw3DRect(0+i, 0+i, 256-i, 256+i, true);		
@@ -98,7 +98,7 @@ public class Main extends JPanel {
 		long Start = 0,End=0;
 		try {
 			Start = System.currentTimeMillis();
-			ping = InetAddress.getByName(ip).isReachable(500);
+			ping = InetAddress.getByName(ip).isReachable(1000);
 			End = System.currentTimeMillis();
 		} catch (IOException f) {
 				f.printStackTrace();
@@ -109,10 +109,10 @@ public class Main extends JPanel {
 		
 
 		g.setColor(Color.black);
-		g.drawString(ip + "   " + (End-Start)+ " ms   ", 60, 20);
+		g.drawString(ip + "   " + (End-Start)+ " ms  "+ (float) 1000/(End-Start)+"/s", 60, 20);
 		g.setColor(ping?Color.green:Color.red);
 		g.drawString(ip+"  ", 100, 100);
-		g.drawLine((int)Math.round(100+(i/2.55)), 53, (int)Math.round(100+(i/2.55)), 53);
+		g.drawLine((int)Math.round(100+(i%51)), 53+i/51, (int)Math.round(100+(i%51)), 53+i/51);
 		g.fillArc(27, 27, 66, 66, (int) -(i* 1.411764705882353), -10);
 		g.setColor(c);
 		g.fillArc(27, 27, 66, 66, 0, 360);
