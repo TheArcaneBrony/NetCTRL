@@ -22,7 +22,9 @@ import java.awt.Graphics2D;
 import net.thearcanebrony.netctrl.StringManager;
 
 public class Main extends JPanel {
-	String ver = "1.1.4a";
+	public static String ver() {
+		return "1.2.5a";
+	}
 	
 	Timer t = new Timer(60001, new Listener());
 	Timer t_ping = new Timer(1, new Listener_ping());
@@ -34,8 +36,7 @@ public class Main extends JPanel {
 	static Graphics2D g2 = (Graphics2D) g;
 	List<Integer> pingtime= new ArrayList<Integer>();
 
-	StringManager sm = new StringManager();
-	
+
 	
 
 	public static void main(String[] args) {
@@ -217,7 +218,13 @@ public class Main extends JPanel {
 				pingtime.remove(0);
 			}
 			//g.drawString(pingtime.toString(), 500,500);
-			for (int d : pingtime) sum += d;
+			try {
+				for (int d : pingtime) sum += d;
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e.getStackTrace());
+			}
+			
 			return sum/pingtime.size();
 			
 		}
