@@ -203,7 +203,7 @@ public class Main extends JPanel {
 			int pingi = (int) (End-Start);
 			g.drawString(pipi + "   " + pingi+ " ms  "+ (float) 1000/pingi+"/s", 60, 120);
 			if(pingi>0) {
-			pingtime.add((int) (1000/pingi));
+			pingtime.add((int) (10000/pingi));
 			}
 			else {
 				
@@ -222,7 +222,7 @@ public class Main extends JPanel {
 				for (int d : pingtime) sum += d;
 			} catch (Exception e) {
 				// TODO: handle exception
-				System.out.println(e.getStackTrace());
+				e.printStackTrace();
 			}
 			
 			return sum/pingtime.size();

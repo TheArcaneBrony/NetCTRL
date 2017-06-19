@@ -38,12 +38,15 @@ public class StringManager {
 		switch (lang) {
 		case "en":
 			ln=1;
+			break;
 		case "nl":
 			ln=2;
+			break;
 		case "my ass":
 			ln=3;
+			break;
 		default:
-
+			return "Invalid language selection!!!";
 		}
 		
 		String str = strings[ln][Arrays.asList(strings[0]).indexOf(key)];
