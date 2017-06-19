@@ -13,16 +13,18 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.rmi.server.SkeletonNotFoundException;
 import java.util.Arrays;
 import java.util.Enumeration;
 
 public class Main extends JPanel {
 	Timer t = new Timer(60001, new Listener());
 	Timer t_ping = new Timer(1, new Listener_ping());
-	static String ip = "";
+	static String lip = "";
 	int i=0;
-	Color c = new Color(10, 75, 15, 10);
+	//Color c = new Color(10, 75, 15, 10);
 	String a = "";
+	Graphics g = getGraphics();
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame("NetCTRL 1.1.4a");
@@ -45,7 +47,7 @@ public class Main extends JPanel {
 						if(!tmp.contains("127.0.0.1") && !tmp.contains(":") && c == 0) {
 							c++;
 							if(c == 1) {
-								ip = tmp;
+								lip = tmp;
 							}
 						} 
 					}
@@ -78,20 +80,24 @@ public class Main extends JPanel {
 	
 	private class Listener_ping implements ActionListener {
 		public void actionPerformed(ActionEvent e){
-			Graphics g = getGraphics();
+			
 			//String[] tmp = ip.replace(".", "k").split("k");
 			//String subnet = tmp[0] + "." + tmp[1] + "." + tmp[2] + ".";
-			PingThread pingthread = new PingThread();
 
-			Thread thread = new Thread(pingthread, "test");
+			
+			if(Thread.activeCount() < 150) {
+				Thread thread = new Thread(new PingThread(), "PingThread "+i);
 			thread.start();
+			
+			
+			 
+			
 			//netping(g, "172.213.12."+ i);//178.116.55
 			i++;
-			
 			//getGraphics().draw3DRect(0+i, 0+i, 256-i, 256+i, true);		
 			if(i==256) {
 				i=0;
-			}
+			}}
 		} 
 	}
 	
@@ -116,40 +122,57 @@ public class Main extends JPanel {
 	}
 	
 	private class PingThread implements Runnable{
-		  @Override
+		Boolean ping=false;
+		long Start = 0,End=0; 
+		int ti = i;
+		Color c = new Color(0, 0, 0, 10);
+		String pip = "";
+		
+		@Override
 		  public void run(){  
-			  
-			  	netping(getGraphics(), "81.11.181."+i);
 
-			  }   
+		  	pip = "81.11.181."+ti;
+			  	netping(Main.this.getGraphics(), pip);
+
+			  } 
+		
 
 		public void netping(Graphics g, String ip) {
-			Boolean ping=false;
-			long Start = 0,End=0;
 			try {
 				Start = System.currentTimeMillis();
-				ping = InetAddress.getByName(ip).isReachable(1000);
+				ping = InetAddress.getByName(ip).isReachable(100);
 				End = System.currentTimeMillis();
 			} catch (IOException f) {
 					f.printStackTrace();
 			}
-			g.setColor(getBackground());
-			g.fillRect(60, 100, 1000, 25);
-			//g.fillRect(100, 85, 100, 15);
-			g.setColor(Color.black);
-			g.drawString(ip + "   " + (End-Start)+ " ms  "+ (float) 1000/(End-Start)+"/s", 60, 120);
+
 			g.setColor(ping?Color.green:Color.red);
-			g.drawString(ip+"  ", 100, 100);
-			draw16(g, i);
-			g.drawLine((int)Math.round(100+(i%51)), 53+i/51, (int)Math.round(100+(i%51)), 53+i/51);
-			g.fillArc(27, 27, 66, 66, (int) -(i* 1.411764705882353), -10);
-			g.setColor(c);
-			g.fillArc(27, 27, 66, 66, 0, 360);
+			
+			draw16(g, ti);
+			drawRadar(g, ti);
+			drawDbg(g);
+
+			
 					
 		}
 		public void draw16(Graphics g, int i) {
-			g.fillRect(16*(i%16), 0, 16, 16);
+			g.fillRect(16*(ti%16), 150 + Math.round(ti/16)*16, 16, 16);
+			g.drawLine((int)Math.round(100+(ti%51)), 53+ti/51, (int)Math.round(100+(ti%51)), 53+ti/51);
 		}
-
+		public void drawRadar(Graphics g, int ti) {		
+			Color c = new Color(getForeground().getRed()-10, getForeground().getGreen()-10, getForeground().getBlue()-10, 10);
+			g.fillArc(27, 27, 66, 66, (int) -(ti* 1.411764705882353), -10);
+			g.setColor(c);
+			//g.setColor(c);
+			g.fillArc(27, 27, 66, 66, 0, 360);
+		}
+		public void drawDbg(Graphics g) {	
+			g.setColor(getBackground());
+			g.fillRect(60, 100, 1000, 25);
+			//g.fillRect(100, 85, 100, 15);
+			
+			g.setColor(Color.black);
+			g.drawString(pip + "   " + (End-Start)+ " ms  "+ (float) 1000/(End-Start)+"/s", 60, 120);
+		}
 	}
 }
