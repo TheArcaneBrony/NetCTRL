@@ -7,7 +7,7 @@ public class StringManager {
 	String[][] strings = 
 						{
 						{"title","online","offline"},
-						{"NetCTRL " + Main.ver(),"Online", "Offline","Current stats: "},
+						{"NetCTRL " + ConfigManager.ver(),"Online", "Offline","Current stats: "},
 						{"",""},
 						{"",""},
 						{"",""},
