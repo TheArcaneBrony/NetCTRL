@@ -23,7 +23,8 @@ import javax.swing.Timer;
 
 @SuppressWarnings("serial")
 public class Main extends JPanel {
-	ConfigManager cfg = new ConfigManager();
+	static ConfigManager cfg = new ConfigManager();
+	static StringManager sm = new StringManager();
 
 	Timer t = new Timer(60001, new Listener());
 	Timer t_ThreadChecker = new Timer(2000, new ThreadChecker());
@@ -38,7 +39,6 @@ public class Main extends JPanel {
 	Thread fgw = new Thread(new ForegroundWorker(), "ForegroundWorker");
 
 	public static void main(String[] args) {
-		StringManager sm = new StringManager();
 		JFrame frame = new JFrame(sm.getTranslation("en", "title"));
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		frame.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight() / 2);
@@ -78,7 +78,7 @@ public class Main extends JPanel {
 		super();
 		addKeyListener(new Key());
 		setFocusable(true);
-		t.start();
+		//t.start();
 		t_ThreadChecker.start();
 		t_avgcalc.start();
 		fgw.start();
@@ -119,7 +119,6 @@ public class Main extends JPanel {
 
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		// System.out.println("Draw called");
 	}
 
 	private class Key extends KeyAdapter {
@@ -161,7 +160,7 @@ public class Main extends JPanel {
 
 		@Override
 		public void run() {
-			pipi = "81.11.181." + ti;// 81.11.181
+			pipi = ConfigManager.ip() + ti;// 81.11.181
 			netping(Main.this.getGraphics(), pipi);
 			
 		}
@@ -206,8 +205,7 @@ public class Main extends JPanel {
 			g.drawString(pipi + "   " + pingi + " ms  " + (float) 1000 / pingi + "/s", 60, 120);
 			if (pingi > 0) {
 				pingtime.add((int) (1000 / pingi));
-			} else
-				;
+			} else;
 			g.fillRect(300, 10, avg, 10);
 
 		}

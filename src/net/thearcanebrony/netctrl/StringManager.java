@@ -29,8 +29,7 @@ public class StringManager {
 						{"",""},
 						{"",""},
 						{"",""},
-						{"",""},
-						{"Invalid language selection!!!",""}
+						{"",""}
 						};
 
 	public String getTranslation(String lang, String key) {
@@ -41,9 +40,6 @@ public class StringManager {
 			break;
 		case "nl":
 			ln=2;
-			break;
-		case "my ass":
-			ln=3;
 			break;
 		default:
 			return "Invalid language selection!!!";
