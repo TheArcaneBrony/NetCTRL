@@ -11,10 +11,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 
 import javax.swing.JFrame;
@@ -26,16 +23,12 @@ public class Main extends JPanel {
 	static ConfigManager cfg = new ConfigManager();
 	static StringManager sm = new StringManager();
 
-	Timer t = new Timer(60001, new Listener());
-	Timer t_ThreadChecker = new Timer(2000, new ThreadChecker());
-	Timer t_avgcalc = new Timer(2, new Listener_avgcalc());
-	static String lip = "";
-	int i = 0;
-	String a = "";
+	Timer t = new Timer(60001, new Listener()), t_ThreadChecker = new Timer(2000, new ThreadChecker()),t_avgcalc = new Timer(2, new Listener_avgcalc());
+	static String lip, a = "";
+	int i, avg = 0;
 	static Graphics g = null;
 	static Graphics2D g2 = (Graphics2D) g;
 	List<Integer> pingtime = new ArrayList<Integer>();
-	int avg = 0;
 	Thread fgw = new Thread(new ForegroundWorker(), "ForegroundWorker");
 
 	public static void main(String[] args) {
@@ -46,32 +39,9 @@ public class Main extends JPanel {
 		frame.setVisible(true);
 		Main panel = new Main();
 		frame.add(panel);
-		try {
-			int c = 0;
-			Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
-			while (e.hasMoreElements() && c == 0) {
-				NetworkInterface n = (NetworkInterface) e.nextElement();
-				String nn = n.getDisplayName();
-				if (!n.isLoopback() && !nn.contains("Virtual") && !nn.contains("ISATAP") && !nn.contains("Interface")) {
-					Enumeration<InetAddress> ee = n.getInetAddresses();
-					while (ee.hasMoreElements() && c == 0) {
-						InetAddress i = (InetAddress) ee.nextElement();
-						String tmp = i.getHostAddress();
-						if (!tmp.contains("127.0.0.1") && !tmp.contains(":") && c == 0) {
-							c++;
-							if (c == 1) {
-								lip = tmp;
-							}
-						}
-					}
-				}
-			}
-		} catch (SocketException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-			System.exit(202);
-		}
+		String tmp = frame.getTitle().split("NetCTRL " + ConfigManager.ver() + " | Detected IP: ")[1];
+		tmp = tmp.replace(".", "f").substring(0, tmp.length() + tmp.lastIndexOf("f"));
+		frame.setTitle(frame.getTitle() + "/" + tmp);
 	}
 
 	public Main() {
