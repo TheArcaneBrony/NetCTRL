@@ -29,18 +29,17 @@ public class Main extends JPanel {
 	static Graphics2D g2 = (Graphics2D) g;
 	List<Integer> pingtime = new ArrayList<Integer>();
 	Thread fgw = new Thread(new ForegroundWorker(), "ForegroundWorker");
+	
+	static String ln = "en";
 
 	public static void main(String[] args) {
-		JFrame frame = new JFrame(sm.getTranslation("en", "title"));
+		JFrame frame = new JFrame(sm.getTranslation(ln, "title"));
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		frame.setSize(gd.getDisplayMode().getWidth(), gd.getDisplayMode().getHeight() / 2);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 		Main panel = new Main();
 		frame.add(panel);
-		String tmp = frame.getTitle().split("NetCTRL " + ConfigManager.ver() + " | Detected IP: ")[1];
-		tmp = tmp.replace(".", "f").substring(0, tmp.length() + tmp.lastIndexOf("f"));
-		frame.setTitle(frame.getTitle() + "/" + tmp);
 	}
 
 	public Main() {
@@ -109,7 +108,7 @@ public class Main extends JPanel {
 			while (true) {
 				g.drawLine(100, 50, 100, 55);
 				g.drawLine(150, 50, 150, 55);
-				if (Thread.activeCount() < 150) {
+				if (Thread.activeCount() < 150000) {
 					Thread thread = new Thread(new PingThread(), "PingThread " + i);
 					thread.start();
 					i++;

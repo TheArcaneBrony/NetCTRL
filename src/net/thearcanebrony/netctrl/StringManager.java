@@ -32,22 +32,25 @@ public class StringManager {
 						{"",""}
 						};
 
-	public String getTranslation(String lang, String key) {
-		int ln = 0;
-		switch (lang) {
+	public String getTranslation(String ln, String key) {
+		int lni = 0;
+		switch (ln) {
+		case "dbg":
+			lni=0;
+			break;
 		case "en":
-			ln=1;
+			lni=1;
 			break;
 		case "nl":
-			ln=2;
+			lni=2;
 			break;
 		default:
 			return "Invalid language selection!!!";
 		}
 		
-		String str = strings[ln][Arrays.asList(strings[0]).indexOf(key)];
+		String str = strings[lni][Arrays.asList(strings[0]).indexOf(key)];
 		if(str=="") {
-			return "String not found!!" + ln + " " + key;
+			return "String not found!!" + lni + " " + key;
 		}
 		return str;
 	}
