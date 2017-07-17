@@ -22,7 +22,7 @@ public class Main extends JPanel {
 	static ConfigManager cfg = new ConfigManager();
 	static StringManager sm = new StringManager();
 
-	Timer t = new Timer(60001, new Listener()), t_ThreadChecker = new Timer(2000, new ThreadChecker()),t_avgcalc = new Timer(2, new Listener_avgcalc());
+	Timer t = new Timer(60001, new Listener()), t_ThreadChecker = new Timer(5000, new ThreadChecker()),t_avgcalc = new Timer(1, new Listener_avgcalc());
 	static String lip, a = "";
 	int i, avg = 0;
 	static Graphics g = null;
@@ -71,9 +71,7 @@ public class Main extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			if (pingtime.size() > 0) {
 				int sum = 0;
-				if (pingtime.size() > 150) {
-					pingtime.remove(1);
-				}
+				
 				try {
 					for (int d : pingtime)
 						sum += d;
@@ -108,13 +106,29 @@ public class Main extends JPanel {
 			while (true) {
 				g.drawLine(100, 50, 100, 55);
 				g.drawLine(150, 50, 150, 55);
-				if (Thread.activeCount() < 150000) {
+				if (Thread.activeCount() < 250) {
 					Thread thread = new Thread(new PingThread(), "PingThread " + i);
 					thread.start();
 					i++;
 					if (i == 256) {
 						i = 0;
 					}
+					
+			}
+				if (pingtime.size() > 15) {
+					pingtime.remove(0);
+				}
+				g.setColor(getBackground());
+				g.fillRect(500, 200, 150, 100);
+				g.setColor(Color.BLACK);
+		for (int i = 0; i < pingtime.size(); i++) {
+			int y = 0;
+			if(pingtime.get(i) != null) {
+			y = pingtime.get(i);
+			}
+			
+			g.drawLine(500+i, 200, 500+i, 200+y);
+			
 				}
 			}
 		}
